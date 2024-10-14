@@ -41,8 +41,6 @@ os.environ["TRANSFORMERS_OFFLINE"] = "1"
 os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
 
 class Predictor(BasePredictor):
-    model = None
-
     def setup(self):
         self.comfyUI = ComfyUI("127.0.0.1:8188")
         self.comfyUI.start_server(OUTPUT_DIR, INPUT_DIR)
@@ -53,9 +51,9 @@ class Predictor(BasePredictor):
 
         custom_models = [
                 {
-                    "name": Predictor.model,
+                    "name": "STOIQONewrealityFLUXSD_F1DAlpha.safetensors",
                     "dest": "diffusion_models",
-                    "url": f"https://huggingface.co/voxvici/flux-lora-nsfw/resolve/main/{Predictor.model}?download=true"
+                    "url": f"https://huggingface.co/voxvici/flux-lora-nsfw/resolve/main/STOIQONewrealityFLUXSD_F1DAlpha.safetensors?download=true"
                 },
                 {
                     "name": "amateurphoto-v5-14-15-1-1.safetensors",
@@ -83,13 +81,6 @@ class Predictor(BasePredictor):
 
     # Update nodes in the JSON workflow to modify your workflow based on the given inputs
     def update_workflow(self, workflow, **kwargs):
-        if kwargs['model'] == "test":
-            workflow["738"]["inputs"]["unet_name"] = "STOIQOAfroditeFLUXSD_F1DAlpha.safetensors"
-            Predictor.model = "STOIQOAfroditeFLUXSD_F1DAlpha.safetensors"
-        else:
-            workflow["738"]["inputs"]["unet_name"] = "STOIQONewrealityFLUXSD_F1DAlpha.safetensors"
-            Predictor.model = "STOIQONewrealityFLUXSD_F1DAlpha.safetensors"
-
         # this is for stoiq with lora stack
         workflow["723"]["inputs"]["text"] = kwargs["prompt"]
         workflow["744"]["inputs"]["noise_seed"] = kwargs["seed"]
@@ -143,11 +134,6 @@ class Predictor(BasePredictor):
             default=0.5,
             le=1,
             ge=-1,
-        ),
-        model: str = Input(
-            description="Model to use",
-            choices=["STOIQONewrealityFLUXSD_F1DAlpha", "test"],
-            default="STOIQONewrealityFLUXSD_F1DAlpha",
         ),
         output_format: str = optimise_images.predict_output_format(),
         output_quality: int = optimise_images.predict_output_quality(),
