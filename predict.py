@@ -133,6 +133,12 @@ class Predictor(BasePredictor):
             choices=list(ASPECT_RATIOS.keys()),
             default="1:1"
         ),
+        guidance: float = Input(
+            description="Guidance for the generated image",
+            default=3.5,
+            max_value=10,
+            min_value=0.1,
+        ),
         output_format: str = optimise_images.predict_output_format(),
         output_quality: int = optimise_images.predict_output_quality(),
         seed: int = seed_helper.predict_seed(),
@@ -174,6 +180,7 @@ class Predictor(BasePredictor):
             lora_filename=lora_filename,
             lora_strength=lora_strength,
             aspect_ratio=aspect_ratio,
+            guidance=guidance,
         )
 
         wf = self.comfyUI.load_workflow(workflow)
