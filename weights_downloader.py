@@ -143,19 +143,23 @@ class WeightsDownloader:
             print(f"✅ {filename} exists in {dest_folder}")
             return
         
-        # if not, download using pget
+        # if not, download using wget
         print(f"⏳ Downloading {filename} to {dest_folder}")
         start = time.time()
-        subprocess.check_call(
-            ["pget", "--log-level", "warn", "-xf", url, dest_folder], close_fds=False
-        )
-        elapsed_time = time.time() - start
-
         try:
+            subprocess.check_call(
+                ["wget", "-q", "-O", dest_path, url],
+                close_fds=False
+            )
+            elapsed_time = time.time() - start
+
             file_size_bytes = os.path.getsize(dest_path)
             file_size_megabytes = file_size_bytes / (1024 * 1024)
             print(
                 f"✅ {filename} downloaded to {dest_folder} in {elapsed_time:.2f}s, size: {file_size_megabytes:.2f}MB"
             )
-        except FileNotFoundError:
-            print(f"✅ {filename} downloaded to {dest_folder} in {elapsed_time:.2f}s")
+        except subprocess.CalledProcessError as e:
+            print(f"Error downloading {filename}: {str(e)}")
+            if os.path.exists(dest_path):
+                os.remove(dest_path)
+            raise

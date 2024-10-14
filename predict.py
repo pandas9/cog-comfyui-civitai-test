@@ -97,6 +97,8 @@ class Predictor(BasePredictor):
         workflow["747"]["inputs"]["width"] = ASPECT_RATIOS[kwargs["aspect_ratio"]][0]
         workflow["747"]["inputs"]["height"] = ASPECT_RATIOS[kwargs["aspect_ratio"]][1]
 
+        workflow["731"]["inputs"]["guidance"] = kwargs["guidance"]
+
         # for input lora
         if kwargs['lora_filename']:
             workflow["751"]['inputs']['switch_1'] = 'On'
