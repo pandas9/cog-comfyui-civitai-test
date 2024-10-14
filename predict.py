@@ -41,6 +41,9 @@ os.environ["TRANSFORMERS_OFFLINE"] = "1"
 os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
 
 class Predictor(BasePredictor):
+    def __init__(self):
+        self.model = None
+
     def setup(self):
         self.comfyUI = ComfyUI("127.0.0.1:8188")
         self.comfyUI.start_server(OUTPUT_DIR, INPUT_DIR)
@@ -51,9 +54,9 @@ class Predictor(BasePredictor):
 
         custom_models = [
                 {
-                    "name": "STOIQOAfroditeFLUXSD_F1DAlpha.safetensors",
+                    "name": self.model,
                     "dest": "diffusion_models",
-                    "url": "https://huggingface.co/voxvici/flux-lora-nsfw/resolve/main/STOIQOAfroditeFLUXSD_F1DAlpha.safetensors?download=true"
+                    "url": f"https://huggingface.co/voxvici/flux-lora-nsfw/resolve/main/{self.model}?download=true"
                 },
                 {
                     "name": "amateurphoto-v5-14-15-1-1.safetensors",
@@ -81,19 +84,16 @@ class Predictor(BasePredictor):
 
     # Update nodes in the JSON workflow to modify your workflow based on the given inputs
     def update_workflow(self, workflow, **kwargs):
-        # Below is an example showing how to get the node you need and update the inputs
-
-        # this is for basic test wf
-        # positive_prompt = workflow["6"]["inputs"]
-        # positive_prompt["text"] = kwargs["prompt"]
-
-        # seed = workflow["25"]["inputs"]
-        # seed["noise_seed"] = kwargs["seed"]
+        if kwargs['model'] == "test":
+            workflow["738"]["inputs"]["unet_name"] = "STOIQOAfroditeFLUXSD_F1DAlpha.safetensors"
+            self.model = "STOIQOAfroditeFLUXSD_F1DAlpha.safetensors"
+        else:
+            workflow["738"]["inputs"]["unet_name"] = "STOIQONewrealityFLUXSD_F1DAlpha.safetensors"
+            self.model = "STOIQONewrealityFLUXSD_F1DAlpha.safetensors"
 
         # this is for stoiq with lora stack
         workflow["723"]["inputs"]["text"] = kwargs["prompt"]
         workflow["744"]["inputs"]["noise_seed"] = kwargs["seed"]
-        # workflow["719"]["inputs"]["filename_prefix"] = kwargs["filename_prefix"] # TODO
         workflow["747"]["inputs"]["width"] = ASPECT_RATIOS[kwargs["aspect_ratio"]][0]
         workflow["747"]["inputs"]["height"] = ASPECT_RATIOS[kwargs["aspect_ratio"]][1]
 
@@ -112,7 +112,7 @@ class Predictor(BasePredictor):
 
         workflow["751"]['inputs']['switch_2'] = 'On'
         workflow["751"]['inputs']['lora_name_2'] = "amateurphoto-v5-14-15-1-1.safetensors"
-        workflow["751"]['inputs']['model_weight_2'] = kwargs['lora_initial_strength']
+        workflow["751"]['inputs']['model_weight_2'] = kwargs['lora_scale']
 
 
     def predict(
@@ -139,11 +139,16 @@ class Predictor(BasePredictor):
             le=10,
             ge=0.1,
         ),
-        lora_initial_strength: float = Input(
-            description="Initial strength of LoRA model",
+        lora_scale: float = Input(
+            description="Initial LoRA scale",
             default=0.5,
             le=1,
             ge=-1,
+        ),
+        model: str = Input(
+            description="Model to use",
+            choices=["STOIQONewrealityFLUXSD_F1DAlpha", "test"],
+            default="STOIQONewrealityFLUXSD_F1DAlpha",
         ),
         output_format: str = optimise_images.predict_output_format(),
         output_quality: int = optimise_images.predict_output_quality(),
@@ -187,7 +192,8 @@ class Predictor(BasePredictor):
             lora_strength=lora_strength,
             aspect_ratio=aspect_ratio,
             guidance=guidance,
-            lora_initial_strength=lora_initial_strength,
+            lora_scale=lora_scale,
+            model=model,
         )
 
         wf = self.comfyUI.load_workflow(workflow)
