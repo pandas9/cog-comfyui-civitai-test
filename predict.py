@@ -49,13 +49,22 @@ class Predictor(BasePredictor):
         with open(api_json_file, "r") as file:
             workflow = json.loads(file.read())
 
-        with open("civitai_models.json", "r") as file:
-            civitai_models = json.loads(file.read())['LIST']
+        custom_models = [
+                {
+                    "name": "STOIQONewrealityFLUXSD_F1DAlpha.safetensors",
+                    "dest": "diffusion_models",
+                    "url": "https://huggingface.co/voxvici/flux-lora-nsfw/resolve/main/STOIQONewrealityFLUXSD_F1DAlpha.safetensors?download=true"
+                },
+                {
+                    "name": "amateurphoto-v5-14-15-1-1.safetensors",
+                    "dest": "loras",
+                    "url": "https://huggingface.co/voxvici/flux-lora/resolve/main/amateurphoto-v5-14-15-1-1.safetensors?download=true"
+                },
+        ]
 
         self.comfyUI.handle_weights(
             workflow,
-            weights_to_download=[],
-            civitai_models=civitai_models,
+            weights_to_download=custom_models,
         )
 
     def filename_with_extension(self, input_file, prefix):
@@ -94,10 +103,13 @@ class Predictor(BasePredictor):
             workflow["751"]['inputs']['model_weight_1'] = kwargs['lora_strength']
         
         # add custom loras
-        workflow["751"]['inputs']['switch_2'] = 'On'
-        workflow["751"]['inputs']['lora_name_2'] = "bustyFC-2.1.safetensors"
-        workflow["751"]['inputs']['model_weight_2'] = 0
+        #workflow["751"]['inputs']['switch_2'] = 'On'
+        #workflow["751"]['inputs']['lora_name_2'] = "bustyFC-2.1.safetensors"
+        #workflow["751"]['inputs']['model_weight_2'] = 0
 
+        workflow["751"]['inputs']['switch_2'] = 'On'
+        workflow["751"]['inputs']['lora_name_2'] = "amateurphoto-v5-14-15-1-1.safetensors"
+        workflow["751"]['inputs']['model_weight_2'] = 0.5
 
 
     def predict(

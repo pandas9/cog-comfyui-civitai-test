@@ -1,24 +1,3 @@
 {
-  "LIST": [
-    {
-      "name": "STOIQONewrealityFLUXSD_F1DAlpha.safetensors",
-      "dest": "diffusion_models",
-      "url": "https://civitai.com/api/download/models/869391?type=Model&format=SafeTensor&size=full&fp=fp16"
-    },
-    {
-      "name": "amateurphoto-v5-14-15-1-1.safetensors",
-      "dest": "loras",
-      "url": "https://civitai.com/api/download/models/901587?type=Model&format=SafeTensor"
-    },
-    {
-      "name": "moody_kodachrome_fluxLoRA_v01.safetensors",
-      "dest": "loras",
-      "url": "https://civitai.com/api/download/models/779854?type=Model&format=SafeTensor"
-    },
-    {
-      "name": "bustyFC-2.1.safetensors",
-      "dest": "loras",
-      "url": "https://civitai.com/api/download/models/723657?type=Model&format=SafeTensor"
-    }
-  ]
+  "LIST": []
 }
