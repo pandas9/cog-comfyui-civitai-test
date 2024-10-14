@@ -178,7 +178,6 @@ class Predictor(BasePredictor):
             aspect_ratio=aspect_ratio,
             guidance=guidance,
             lora_scale=lora_scale,
-            model=model,
         )
 
         wf = self.comfyUI.load_workflow(workflow)
