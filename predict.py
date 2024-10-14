@@ -136,8 +136,8 @@ class Predictor(BasePredictor):
         guidance: float = Input(
             description="Guidance for the generated image",
             default=3.5,
-            max_value=10,
-            min_value=0.1,
+            le=10,
+            ge=0.1,
         ),
         output_format: str = optimise_images.predict_output_format(),
         output_quality: int = optimise_images.predict_output_quality(),
