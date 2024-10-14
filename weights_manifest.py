@@ -91,11 +91,11 @@ class WeightsManifest:
 
         def generate_weights_map(keys, dest):
             # https://github.com/comfyanonymous/ComfyUI/commit/4f7a3cb6fbd58d7546b3c76ec1f418a2650ed709
-            if dest == "diffusion_models":
+            if dest == "unet":
                 return {
                     key: {
                         "url": f"{BASE_URL}/{dest}/{key}.tar",
-                        "dest": f"{MODELS_PATH}/unet",
+                        "dest": f"{MODELS_PATH}/diffusion_models",
                     }
                     for key in keys
                 }

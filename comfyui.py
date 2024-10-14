@@ -41,7 +41,7 @@ class ComfyUI:
         print(f"Server started in {elapsed_time:.2f} seconds")
 
     def run_server(self, output_directory, input_directory):
-        command = f"python ComfyUI/main.py --output-directory {output_directory} --input-directory {input_directory} --disable-metadata"
+        command = f"python ./ComfyUI/main.py --output-directory {output_directory} --input-directory {input_directory} --disable-metadata"
 
         """
         We need to capture the stdout and stderr from the server process
@@ -85,7 +85,7 @@ class ComfyUI:
             if callable(method):
                 method(*args, **kwargs)
 
-    def handle_weights(self, workflow, weights_to_download=None, civitai_models=None):
+    def handle_weights(self, workflow, weights_to_download=None):
         if weights_to_download is None:
             weights_to_download = []
 
@@ -110,9 +110,8 @@ class ComfyUI:
 
         weights_to_download = list(set(weights_to_download))
 
-        if civitai_models:
-            for model in civitai_models:
-                self.weights_downloader.handle_civitai_download(model)
+        for weight in weights_to_download:
+            self.weights_downloader.download_weights(weight)
 
         print("====================================")
 
