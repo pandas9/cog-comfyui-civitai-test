@@ -110,6 +110,9 @@ class ComfyUI:
 
         weights_to_download = list(set(weights_to_download))
 
+        for weight in weights_to_download:
+            self.weights_downloader.download_weights(weight)
+
         if civitai_models:
             for model in civitai_models:
                 self.weights_downloader.handle_civitai_download(model)
