@@ -49,11 +49,13 @@ class Predictor(BasePredictor):
         with open(api_json_file, "r") as file:
             workflow = json.loads(file.read())
 
+        model = workflow["738"]["inputs"]["unet_name"]
+
         custom_models = [
                 {
-                    "name": "STOIQONewrealityFLUXSD_F1DAlpha.safetensors",
+                    "name": model,
                     "dest": "diffusion_models",
-                    "url": f"https://huggingface.co/voxvici/flux-lora-nsfw/resolve/main/STOIQONewrealityFLUXSD_F1DAlpha.safetensors?download=true"
+                    "url": f"https://huggingface.co/voxvici/flux-lora-nsfw/resolve/main/{model}?download=true"
                 },
                 {
                     "name": "amateurphoto-v5-14-15-1-1.safetensors",
@@ -81,13 +83,20 @@ class Predictor(BasePredictor):
 
     # Update nodes in the JSON workflow to modify your workflow based on the given inputs
     def update_workflow(self, workflow, **kwargs):
+        if kwargs['model'] == "test":
+            workflow["738"]["inputs"]["unet_name"] = "STOIQOAfroditeFLUXSD_F1DAlpha.safetensors"
+        else:
+            workflow["738"]["inputs"]["unet_name"] = "STOIQONewrealityFLUXSD_F1DAlpha.safetensors"
+
+        workflow["742"]["inputs"]["steps"] = kwargs["num_inference_steps"]
+
         # this is for stoiq with lora stack
         workflow["723"]["inputs"]["text"] = kwargs["prompt"]
         workflow["744"]["inputs"]["noise_seed"] = kwargs["seed"]
         workflow["747"]["inputs"]["width"] = ASPECT_RATIOS[kwargs["aspect_ratio"]][0]
         workflow["747"]["inputs"]["height"] = ASPECT_RATIOS[kwargs["aspect_ratio"]][1]
 
-        workflow["731"]["inputs"]["guidance"] = kwargs["guidance"]
+        workflow["731"]["inputs"]["guidance"] = kwargs["guidance_scale"]
 
         # for input lora
         if kwargs['lora_filename']:
@@ -95,11 +104,6 @@ class Predictor(BasePredictor):
             workflow["751"]['inputs']['lora_name_1'] = kwargs['lora_filename']
             workflow["751"]['inputs']['model_weight_1'] = kwargs['lora_strength']
         
-        # add custom loras
-        #workflow["751"]['inputs']['switch_2'] = 'On'
-        #workflow["751"]['inputs']['lora_name_2'] = "bustyFC-2.1.safetensors"
-        #workflow["751"]['inputs']['model_weight_2'] = 0
-
         workflow["751"]['inputs']['switch_2'] = 'On'
         workflow["751"]['inputs']['lora_name_2'] = "amateurphoto-v5-14-15-1-1.safetensors"
         workflow["751"]['inputs']['model_weight_2'] = kwargs['lora_scale']
@@ -123,17 +127,28 @@ class Predictor(BasePredictor):
             choices=list(ASPECT_RATIOS.keys()),
             default="1:1"
         ),
-        guidance: float = Input(
+        guidance_scale: float = Input(
             description="Guidance for the generated image",
             default=3.5,
             le=10,
             ge=0.1,
+        ),
+        num_inference_steps: float = Input(
+            description="Number of inference steps",
+            default=25,
+            le=50,
+            ge=1,
         ),
         lora_scale: float = Input(
             description="Initial LoRA scale",
             default=0.5,
             le=1,
             ge=-1,
+        ),
+        model: str = Input(
+            description="Model to use",
+            choices=["STOIQONewrealityFLUXSD_F1DAlpha", "test"],
+            default="STOIQONewrealityFLUXSD_F1DAlpha",
         ),
         output_format: str = optimise_images.predict_output_format(),
         output_quality: int = optimise_images.predict_output_quality(),
@@ -176,8 +191,10 @@ class Predictor(BasePredictor):
             lora_filename=lora_filename,
             lora_strength=lora_strength,
             aspect_ratio=aspect_ratio,
-            guidance=guidance,
+            guidance_scale=guidance_scale,
             lora_scale=lora_scale,
+            num_inference_steps=num_inference_steps,
+            model=model,
         )
 
         wf = self.comfyUI.load_workflow(workflow)
