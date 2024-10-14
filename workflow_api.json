@@ -61,7 +61,7 @@
   },
   "738": {
     "inputs": {
-      "unet_name": "STOIQOAfroditeFLUXSD_F1DAlpha.safetensors",
+      "unet_name": "STOIQONewrealityFLUXSD_F1DAlpha.safetensors",
       "weight_dtype": "fp8_e4m3fn"
     },
     "class_type": "UNETLoader",
