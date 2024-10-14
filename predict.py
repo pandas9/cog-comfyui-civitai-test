@@ -50,6 +50,9 @@ class Predictor(BasePredictor):
             workflow = json.loads(file.read())
 
         model = workflow["738"]["inputs"]["unet_name"]
+        print("====================================")
+        print(f"Model: {model}")
+        print("====================================")
 
         custom_models = [
                 {
