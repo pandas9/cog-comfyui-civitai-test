@@ -129,3 +129,33 @@ class WeightsDownloader:
                 progress_bar.update(size)
 
         print(f"✅ {filename} downloaded to {dest_folder}")
+
+    def download_custom_model(self, model):
+        url = model['url']
+        dest_folder = os.path.join(MODELS_PATH, model['dest'])
+        os.makedirs(dest_folder, exist_ok=True)
+
+        filename = model['name']
+        dest_path = os.path.join(dest_folder, filename)
+
+        # check if exists locally
+        if os.path.exists(dest_path):
+            print(f"✅ {filename} exists in {dest_folder}")
+            return
+        
+        # if not, download using pget
+        print(f"⏳ Downloading {filename} to {dest_folder}")
+        start = time.time()
+        subprocess.check_call(
+            ["pget", "--log-level", "warn", "-xf", url, dest_folder], close_fds=False
+        )
+        elapsed_time = time.time() - start
+
+        try:
+            file_size_bytes = os.path.getsize(dest_path)
+            file_size_megabytes = file_size_bytes / (1024 * 1024)
+            print(
+                f"✅ {filename} downloaded to {dest_folder} in {elapsed_time:.2f}s, size: {file_size_megabytes:.2f}MB"
+            )
+        except FileNotFoundError:
+            print(f"✅ {filename} downloaded to {dest_folder} in {elapsed_time:.2f}s")

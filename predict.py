@@ -64,7 +64,8 @@ class Predictor(BasePredictor):
 
         self.comfyUI.handle_weights(
             workflow,
-            weights_to_download=custom_models,
+            weights_to_download=[],
+            custom_models=custom_models,
         )
 
     def filename_with_extension(self, input_file, prefix):
