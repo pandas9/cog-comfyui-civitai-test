@@ -51,9 +51,9 @@ class Predictor(BasePredictor):
 
         custom_models = [
                 {
-                    "name": "STOIQONewrealityFLUXSD_F1DAlpha.safetensors",
+                    "name": "STOIQOAfroditeFLUXSD_F1DAlpha.safetensors",
                     "dest": "diffusion_models",
-                    "url": f"https://huggingface.co/voxvici/flux-lora-nsfw/resolve/main/STOIQONewrealityFLUXSD_F1DAlpha.safetensors?download=true"
+                    "url": f"https://huggingface.co/voxvici/flux-lora-nsfw/resolve/main/STOIQOAfroditeFLUXSD_F1DAlpha.safetensors?download=true"
                 },
                 {
                     "name": "amateurphoto-v5-14-15-1-1.safetensors",
