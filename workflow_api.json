@@ -1,219 +1,171 @@
 {
-    "702": {
-      "inputs": {
-        "samples": [
-          "740",
-          0
-        ],
-        "vae": [
-          "736",
-          0
-        ]
-      },
-      "class_type": "VAEDecode",
-      "_meta": {
-        "title": "VAE Decode"
-      }
+  "702": {
+    "inputs": {
+      "samples": ["740", 0],
+      "vae": ["736", 0]
     },
-    "719": {
-      "inputs": {
-        "filename_prefix": "STOIQO\\Previews\\FLUX[time(%Y%m%d)]",
-        "images": [
-          "702",
-          0
-        ]
-      },
-      "class_type": "SaveImage",
-      "_meta": {
-        "title": "Save Image"
-      }
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "719": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": ["702", 0]
     },
-    "723": {
-      "inputs": {
-        "text": "A kodachrome portrait of a young woman, captured in a minimalist setting. She is wearing a shiny, white, form-fitting bodysuit that accentuates her form. Her hair is styled in loose waves, cascading down her shoulders. The woman's gaze is direct and intense, with a neutral expression. The background is blurred, emphasizing the subject, and is predominantly white, which contrasts with the subject's attire. The overall style of the image is contemporary and minimalist, focusing on the subject and her attire.\n",
-        "clip": [
-          "752",
-          1
-        ]
-      },
-      "class_type": "CLIPTextEncode",
-      "_meta": {
-        "title": "CLIP Text Encode (Prompt)"
-      }
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save Image"
+    }
+  },
+  "723": {
+    "inputs": {
+      "text": "A kodachrome portrait of a young woman, captured in a minimalist setting. She is wearing a shiny, white, form-fitting bodysuit that accentuates her form. Her hair is styled in loose waves, cascading down her shoulders. The woman's gaze is direct and intense, with a neutral expression. The background is blurred, emphasizing the subject, and is predominantly white, which contrasts with the subject's attire. The overall style of the image is contemporary and minimalist, focusing on the subject and her attire.\n",
+      "clip": ["752", 1]
     },
-    "731": {
-      "inputs": {
-        "guidance": 2.5,
-        "conditioning": [
-          "723",
-          0
-        ]
-      },
-      "class_type": "FluxGuidance",
-      "_meta": {
-        "title": "FluxGuidance"
-      }
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "731": {
+    "inputs": {
+      "guidance": 2.5,
+      "conditioning": ["723", 0]
     },
-    "736": {
-      "inputs": {
-        "vae_name": "ae.safetensors"
-      },
-      "class_type": "VAELoader",
-      "_meta": {
-        "title": "Load VAE"
-      }
+    "class_type": "FluxGuidance",
+    "_meta": {
+      "title": "FluxGuidance"
+    }
+  },
+  "736": {
+    "inputs": {
+      "vae_name": "ae.safetensors"
     },
-    "737": {
-      "inputs": {
-        "clip_name1": "t5xxl_fp16.safetensors",
-        "clip_name2": "clip_l.safetensors",
-        "type": "flux"
-      },
-      "class_type": "DualCLIPLoader",
-      "_meta": {
-        "title": "DualCLIPLoader"
-      }
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "Load VAE"
+    }
+  },
+  "737": {
+    "inputs": {
+      "clip_name1": "t5xxl_fp16.safetensors",
+      "clip_name2": "clip_l.safetensors",
+      "type": "flux"
     },
-    "738": {
-      "inputs": {
-        "unet_name": "STOIQONewrealityFLUXSD_F1DAlpha.safetensors",
-        "weight_dtype": "fp8_e4m3fn"
-      },
-      "class_type": "UNETLoader",
-      "_meta": {
-        "title": "Load Diffusion Model"
-      }
+    "class_type": "DualCLIPLoader",
+    "_meta": {
+      "title": "DualCLIPLoader"
+    }
+  },
+  "738": {
+    "inputs": {
+      "unet_name": "STOIQONewrealityFLUXSD_F1DAlpha.safetensors",
+      "weight_dtype": "fp8_e4m3fn"
     },
-    "740": {
-      "inputs": {
-        "noise": [
-          "744",
-          0
-        ],
-        "guider": [
-          "743",
-          0
-        ],
-        "sampler": [
-          "741",
-          0
-        ],
-        "sigmas": [
-          "742",
-          0
-        ],
-        "latent_image": [
-          "747",
-          5
-        ]
-      },
-      "class_type": "SamplerCustomAdvanced",
-      "_meta": {
-        "title": "SamplerCustomAdvanced"
-      }
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "Load Diffusion Model"
+    }
+  },
+  "740": {
+    "inputs": {
+      "noise": ["744", 0],
+      "guider": ["743", 0],
+      "sampler": ["741", 0],
+      "sigmas": ["742", 0],
+      "latent_image": ["747", 5]
     },
-    "741": {
-      "inputs": {
-        "sampler_name": "euler"
-      },
-      "class_type": "KSamplerSelect",
-      "_meta": {
-        "title": "KSamplerSelect"
-      }
+    "class_type": "SamplerCustomAdvanced",
+    "_meta": {
+      "title": "SamplerCustomAdvanced"
+    }
+  },
+  "741": {
+    "inputs": {
+      "sampler_name": "euler"
     },
-    "742": {
-      "inputs": {
-        "scheduler": "beta",
-        "steps": 25,
-        "denoise": 1,
-        "model": [
-          "752",
-          0
-        ]
-      },
-      "class_type": "BasicScheduler",
-      "_meta": {
-        "title": "BasicScheduler"
-      }
+    "class_type": "KSamplerSelect",
+    "_meta": {
+      "title": "KSamplerSelect"
+    }
+  },
+  "742": {
+    "inputs": {
+      "scheduler": "beta",
+      "steps": 25,
+      "denoise": 1,
+      "model": ["752", 0]
     },
-    "743": {
-      "inputs": {
-        "model": [
-          "752",
-          0
-        ],
-        "conditioning": [
-          "731",
-          0
-        ]
-      },
-      "class_type": "BasicGuider",
-      "_meta": {
-        "title": "BasicGuider"
-      }
+    "class_type": "BasicScheduler",
+    "_meta": {
+      "title": "BasicScheduler"
+    }
+  },
+  "743": {
+    "inputs": {
+      "model": ["752", 0],
+      "conditioning": ["731", 0]
     },
-    "744": {
-      "inputs": {
-        "noise_seed": 845155723427617
-      },
-      "class_type": "RandomNoise",
-      "_meta": {
-        "title": "RandomNoise"
-      }
+    "class_type": "BasicGuider",
+    "_meta": {
+      "title": "BasicGuider"
+    }
+  },
+  "744": {
+    "inputs": {
+      "noise_seed": 845155723427617
     },
-    "747": {
-      "inputs": {
-        "width": 1024,
-        "height": 1024,
-        "aspect_ratio": "custom",
-        "swap_dimensions": "Off",
-        "upscale_factor": 1,
-        "prescale_factor": 1,
-        "batch_size": 1
-      },
-      "class_type": "CR Aspect Ratio",
-      "_meta": {
-        "title": "🔳 CR Aspect Ratio"
-      }
+    "class_type": "RandomNoise",
+    "_meta": {
+      "title": "RandomNoise"
+    }
+  },
+  "747": {
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "aspect_ratio": "custom",
+      "swap_dimensions": "Off",
+      "upscale_factor": 1,
+      "prescale_factor": 1,
+      "batch_size": 1
     },
-    "751": {
-      "inputs": {
-        "switch_1": "Off",
-        "lora_name_1": "None",
-        "model_weight_1": 1,
-        "clip_weight_1": 1,
-        "switch_2": "Off",
-        "lora_name_2": "None",
-        "model_weight_2": 1,
-        "clip_weight_2": 1,
-        "switch_3": "Off",
-        "lora_name_3": "None",
-        "model_weight_3": 1,
-        "clip_weight_3": 1
-      },
-      "class_type": "CR LoRA Stack",
-      "_meta": {
-        "title": "💊 CR LoRA Stack"
-      }
+    "class_type": "CR Aspect Ratio",
+    "_meta": {
+      "title": "🔳 CR Aspect Ratio"
+    }
+  },
+  "751": {
+    "inputs": {
+      "switch_1": "Off",
+      "lora_name_1": "None",
+      "model_weight_1": 1,
+      "clip_weight_1": 1,
+      "switch_2": "Off",
+      "lora_name_2": "None",
+      "model_weight_2": 1,
+      "clip_weight_2": 1,
+      "switch_3": "Off",
+      "lora_name_3": "None",
+      "model_weight_3": 1,
+      "clip_weight_3": 1
     },
-    "752": {
-      "inputs": {
-        "model": [
-          "738",
-          0
-        ],
-        "clip": [
-          "737",
-          0
-        ],
-        "lora_stack": [
-          "751",
-          0
-        ]
-      },
-      "class_type": "CR Apply LoRA Stack",
-      "_meta": {
-        "title": "💊 CR Apply LoRA Stack"
-      }
+    "class_type": "CR LoRA Stack",
+    "_meta": {
+      "title": "💊 CR LoRA Stack"
+    }
+  },
+  "752": {
+    "inputs": {
+      "model": ["738", 0],
+      "clip": ["737", 0],
+      "lora_stack": ["751", 0]
+    },
+    "class_type": "CR Apply LoRA Stack",
+    "_meta": {
+      "title": "💊 CR Apply LoRA Stack"
     }
   }
+}
