@@ -41,8 +41,7 @@ os.environ["TRANSFORMERS_OFFLINE"] = "1"
 os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
 
 class Predictor(BasePredictor):
-    def __init__(self):
-        self.model = None
+    model = None
 
     def setup(self):
         self.comfyUI = ComfyUI("127.0.0.1:8188")
@@ -54,9 +53,9 @@ class Predictor(BasePredictor):
 
         custom_models = [
                 {
-                    "name": self.model,
+                    "name": Predictor.model,
                     "dest": "diffusion_models",
-                    "url": f"https://huggingface.co/voxvici/flux-lora-nsfw/resolve/main/{self.model}?download=true"
+                    "url": f"https://huggingface.co/voxvici/flux-lora-nsfw/resolve/main/{Predictor.model}?download=true"
                 },
                 {
                     "name": "amateurphoto-v5-14-15-1-1.safetensors",
@@ -86,10 +85,10 @@ class Predictor(BasePredictor):
     def update_workflow(self, workflow, **kwargs):
         if kwargs['model'] == "test":
             workflow["738"]["inputs"]["unet_name"] = "STOIQOAfroditeFLUXSD_F1DAlpha.safetensors"
-            self.model = "STOIQOAfroditeFLUXSD_F1DAlpha.safetensors"
+            Predictor.model = "STOIQOAfroditeFLUXSD_F1DAlpha.safetensors"
         else:
             workflow["738"]["inputs"]["unet_name"] = "STOIQONewrealityFLUXSD_F1DAlpha.safetensors"
-            self.model = "STOIQONewrealityFLUXSD_F1DAlpha.safetensors"
+            Predictor.model = "STOIQONewrealityFLUXSD_F1DAlpha.safetensors"
 
         # this is for stoiq with lora stack
         workflow["723"]["inputs"]["text"] = kwargs["prompt"]
