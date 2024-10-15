@@ -111,6 +111,9 @@ class Predictor(BasePredictor):
         workflow["751"]['inputs']['lora_name_2'] = "amateurphoto-v5-14-15-1-1.safetensors"
         workflow["751"]['inputs']['model_weight_2'] = kwargs['lora_scale']
 
+        with open(api_json_file, "w") as file:
+            json.dump(workflow, file, indent=4)
+
 
     def predict(
         self,
