@@ -37,7 +37,7 @@ downloaded_user_models/
 ComfyUI/venv
 ComfyUI/temp
 ComfyUI/user
-ComfyUI/models
+#ComfyUI/models
 ComfyUI/custom_nodes/comfyUI_controlnet_aux/ckpts
 ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/models
 ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion_lora
