@@ -16,7 +16,7 @@ from weights_downloader import WeightsDownloader
 
 PREDEFINED_WEIGHT_SETS = {
     "flux": [
-        "flux1-dev.safetensors",
+        #"flux1-dev.safetensors",
         "ae.safetensors",
         "clip_l.safetensors",
         "t5xxl_fp8_e4m3fn.safetensors",
