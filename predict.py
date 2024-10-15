@@ -49,23 +49,13 @@ class Predictor(BasePredictor):
         with open(api_json_file, "r") as file:
             workflow = json.loads(file.read())
 
+        # doesn't work model stays same even after update_workflow
         model = workflow["738"]["inputs"]["unet_name"]
         print("====================================")
         print(f"Model: {model}")
         print("====================================")
 
-        custom_models = [
-                {
-                    "name": model,
-                    "dest": "diffusion_models",
-                    "url": f"https://huggingface.co/voxvici/flux-lora-nsfw/resolve/main/{model}?download=true"
-                },
-                {
-                    "name": "amateurphoto-v5-14-15-1-1.safetensors",
-                    "dest": "loras",
-                    "url": "https://huggingface.co/voxvici/flux-lora/resolve/main/amateurphoto-v5-14-15-1-1.safetensors?download=true"
-                },
-        ]
+        custom_models = []
 
         self.comfyUI.handle_weights(
             workflow,
