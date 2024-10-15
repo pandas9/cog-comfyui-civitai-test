@@ -111,9 +111,6 @@ class Predictor(BasePredictor):
         workflow["751"]['inputs']['lora_name_2'] = "amateurphoto-v5-14-15-1-1.safetensors"
         workflow["751"]['inputs']['model_weight_2'] = kwargs['lora_scale']
 
-        with open(api_json_file, "w") as file:
-            json.dump(workflow, file, indent=4)
-
 
     def predict(
         self,
@@ -159,16 +156,16 @@ class Predictor(BasePredictor):
         output_format: str = optimise_images.predict_output_format(),
         output_quality: int = optimise_images.predict_output_quality(),
         seed: int = seed_helper.predict_seed(),
-        lora_url: str = Input(
-            description="Optional LoRA model to use. Give a URL to a HuggingFace .safetensors file, a Replicate .tar file or a CivitAI download link.",
-            default="",
-        ),
-        lora_strength: float = Input(
-            description="Strength of LoRA model",
-            default=1,
-            le=3,
-            ge=-1,
-        ),
+        #lora_url: str = Input(
+        #    description="Optional LoRA model to use. Give a URL to a HuggingFace .safetensors file, a Replicate .tar file or a CivitAI download link.",
+        #    default="",
+        #),
+        #lora_strength: float = Input(
+        #    description="Strength of LoRA model",
+        #    default=1,
+        #    le=3,
+        #    ge=-1,
+        #),
     ) -> List[Path]:
         """Run a single prediction on the model"""
         self.comfyUI.cleanup(ALL_DIRECTORIES)
@@ -176,9 +173,9 @@ class Predictor(BasePredictor):
         # Make sure to set the seeds in your workflow
         seed = seed_helper.generate(seed)
 
-        lora_filename = None
-        if lora_url:
-            lora_filename = self.download_lora(lora_url)
+        #lora_filename = None
+        #if lora_url:
+        #    lora_filename = self.download_lora(lora_url)
 
         image_filename = None
         if image:
@@ -194,8 +191,8 @@ class Predictor(BasePredictor):
             negative_prompt=negative_prompt,
             image_filename=image_filename,
             seed=seed,
-            lora_filename=lora_filename,
-            lora_strength=lora_strength,
+            #lora_filename=lora_filename,
+            #lora_strength=lora_strength,
             aspect_ratio=aspect_ratio,
             guidance_scale=guidance_scale,
             lora_scale=lora_scale,
