@@ -50,10 +50,7 @@ class Predictor(BasePredictor):
             workflow = json.loads(file.read())
 
         # doesn't work model stays same even after update_workflow
-        model = workflow["738"]["inputs"]["unet_name"]
-        print("====================================")
-        print(f"Model: {model}")
-        print("====================================")
+        #model = workflow["738"]["inputs"]["unet_name"]
 
         custom_models = []
 
@@ -81,6 +78,10 @@ class Predictor(BasePredictor):
         else:
             workflow["738"]["inputs"]["unet_name"] = "STOIQONewrealityFLUXSD_F1DAlpha.safetensors"
 
+        print("====================================")
+        print(f"Model: {workflow['738']['inputs']['unet_name']}")
+        print("====================================")
+
         workflow["742"]["inputs"]["steps"] = kwargs["num_inference_steps"]
 
         # this is for stoiq with lora stack
@@ -90,16 +91,11 @@ class Predictor(BasePredictor):
         workflow["747"]["inputs"]["height"] = ASPECT_RATIOS[kwargs["aspect_ratio"]][1]
 
         workflow["731"]["inputs"]["guidance"] = kwargs["guidance_scale"]
-
-        # for input lora
-        #if kwargs['lora_filename']:
-        #    workflow["751"]['inputs']['switch_1'] = 'On'
-        #    workflow["751"]['inputs']['lora_name_1'] = kwargs['lora_filename']
-        #    workflow["751"]['inputs']['model_weight_1'] = kwargs['lora_strength']
         
-        workflow["751"]['inputs']['switch_2'] = 'On'
-        workflow["751"]['inputs']['lora_name_2'] = "amateurphoto-v5-14-15-1-1.safetensors"
-        workflow["751"]['inputs']['model_weight_2'] = kwargs['lora_scale']
+        if kwargs['add_lora']:
+            workflow["751"]['inputs']['switch_1'] = 'On'
+            workflow["751"]['inputs']['lora_name_1'] = "scg-anatomy-female-v2.safetensors"
+            workflow["751"]['inputs']['model_weight_1'] = kwargs['lora_scale']
 
 
     def predict(
@@ -107,14 +103,14 @@ class Predictor(BasePredictor):
         prompt: str = Input(
             default="",
         ),
-        negative_prompt: str = Input(
-            description="Things you do not want to see in your image",
-            default="",
-        ),
-        image: Path = Input(
-            description="An input image",
-            default=None,
-        ),
+        #negative_prompt: str = Input(
+        #    description="Things you do not want to see in your image",
+        #    default="",
+        #),
+        #image: Path = Input(
+        #    description="An input image",
+        #    default=None,
+        #),
         aspect_ratio: str = Input(
             description="Aspect ratio for the generated image",
             choices=list(ASPECT_RATIOS.keys()),
@@ -122,13 +118,13 @@ class Predictor(BasePredictor):
         ),
         guidance_scale: float = Input(
             description="Guidance for the generated image",
-            default=3.5,
+            default=2.5,
             le=10,
             ge=0.1,
         ),
         num_inference_steps: float = Input(
             description="Number of inference steps",
-            default=25,
+            default=28,
             le=50,
             ge=1,
         ),
@@ -142,6 +138,10 @@ class Predictor(BasePredictor):
             description="Model to use",
             choices=["STOIQONewrealityFLUXSD_F1DAlpha", "test"],
             default="STOIQONewrealityFLUXSD_F1DAlpha",
+        ),
+        add_lora: bool = Input(
+            description="Add LoRA to the model",
+            default=False,
         ),
         output_format: str = optimise_images.predict_output_format(),
         output_quality: int = optimise_images.predict_output_quality(),
@@ -167,10 +167,10 @@ class Predictor(BasePredictor):
         #if lora_url:
         #    lora_filename = self.download_lora(lora_url)
 
-        image_filename = None
-        if image:
-            image_filename = self.filename_with_extension(image, "image")
-            self.handle_input_file(image, image_filename)
+        #image_filename = None
+        #if image:
+        #    image_filename = self.filename_with_extension(image, "image")
+        #    self.handle_input_file(image, image_filename)
 
         with open(api_json_file, "r") as file:
             workflow = json.loads(file.read())
@@ -178,8 +178,8 @@ class Predictor(BasePredictor):
         self.update_workflow(
             workflow,
             prompt=prompt,
-            negative_prompt=negative_prompt,
-            image_filename=image_filename,
+            #negative_prompt=negative_prompt,
+            #image_filename=image_filename,
             seed=seed,
             #lora_filename=lora_filename,
             #lora_strength=lora_strength,
@@ -188,6 +188,7 @@ class Predictor(BasePredictor):
             lora_scale=lora_scale,
             num_inference_steps=num_inference_steps,
             model=model,
+            add_lora=add_lora,
         )
 
         wf = self.comfyUI.load_workflow(workflow)
