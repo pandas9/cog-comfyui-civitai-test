@@ -60,6 +60,7 @@ def main(filenames):
             weight_files.extend(extract_weights_from_workflow(filename))
         else:
             weight_files.append(filename)
+    print(weight_files)
     download_weight_files(weight_files)
 
 
