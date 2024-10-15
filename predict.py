@@ -92,10 +92,10 @@ class Predictor(BasePredictor):
         workflow["731"]["inputs"]["guidance"] = kwargs["guidance_scale"]
 
         # for input lora
-        if kwargs['lora_filename']:
-            workflow["751"]['inputs']['switch_1'] = 'On'
-            workflow["751"]['inputs']['lora_name_1'] = kwargs['lora_filename']
-            workflow["751"]['inputs']['model_weight_1'] = kwargs['lora_strength']
+        #if kwargs['lora_filename']:
+        #    workflow["751"]['inputs']['switch_1'] = 'On'
+        #    workflow["751"]['inputs']['lora_name_1'] = kwargs['lora_filename']
+        #    workflow["751"]['inputs']['model_weight_1'] = kwargs['lora_strength']
         
         workflow["751"]['inputs']['switch_2'] = 'On'
         workflow["751"]['inputs']['lora_name_2'] = "amateurphoto-v5-14-15-1-1.safetensors"
