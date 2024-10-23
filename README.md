@@ -31,6 +31,8 @@ docker system prune -a
 
 completely reset Docker and remove all of its data
 sudo systemctl stop docker
+sudo systemctl stop docker.service
+sudo systemctl stop docker.socket
 sudo rm -rf /var/lib/docker
 
 sudo systemctl start docker
