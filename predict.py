@@ -49,15 +49,10 @@ class Predictor(BasePredictor):
         with open(api_json_file, "r") as file:
             workflow = json.loads(file.read())
 
-        # doesn't work model stays same even after update_workflow
-        #model = workflow["738"]["inputs"]["unet_name"]
-
-        custom_models = []
-
         self.comfyUI.handle_weights(
             workflow,
             weights_to_download=[],
-            custom_models=custom_models,
+            custom_models=[],
         )
 
     def filename_with_extension(self, input_file, prefix):
@@ -73,44 +68,33 @@ class Predictor(BasePredictor):
 
     # Update nodes in the JSON workflow to modify your workflow based on the given inputs
     def update_workflow(self, workflow, **kwargs):
-        if kwargs['model'] == "test":
-            workflow["738"]["inputs"]["unet_name"] = "STOIQOAfroditeFLUXSD_F1DAlpha.safetensors"
-        else:
-            workflow["738"]["inputs"]["unet_name"] = "STOIQONewrealityFLUXSD_F1DAlpha.safetensors"
+        workflow["68"]["inputs"]["width"] = ASPECT_RATIOS[kwargs["aspect_ratio"]][0]
+        workflow["68"]["inputs"]["height"] = ASPECT_RATIOS[kwargs["aspect_ratio"]][1]
 
-        print("====================================")
-        print(f"Model: {workflow['738']['inputs']['unet_name']}")
-        print("====================================")
+        workflow["6"]["inputs"]["text"] = kwargs["prompt"]
+        workflow["7"]["inputs"]["text"] = kwargs["negative_prompt"]
 
-        workflow["742"]["inputs"]["steps"] = kwargs["num_inference_steps"]
+        # low salary slave
+        workflow["3"]["inputs"]["seed"] = kwargs["seed"]
+        workflow["3"]["inputs"]["steps"] = kwargs["num_inference_steps"]
+        workflow["3"]["inputs"]["cfg"] = kwargs["guidance_scale"]
+        workflow["3"]["inputs"]["denoise"] = kwargs["denoise"]
 
-        # this is for stoiq with lora stack
-        workflow["723"]["inputs"]["text"] = kwargs["prompt"]
-        workflow["744"]["inputs"]["noise_seed"] = kwargs["seed"]
-        workflow["747"]["inputs"]["width"] = ASPECT_RATIOS[kwargs["aspect_ratio"]][0]
-        workflow["747"]["inputs"]["height"] = ASPECT_RATIOS[kwargs["aspect_ratio"]][1]
-
-        workflow["731"]["inputs"]["guidance"] = kwargs["guidance_scale"]
-        
-        if kwargs['add_lora']:
-            workflow["751"]['inputs']['switch_1'] = 'On'
-            workflow["751"]['inputs']['lora_name_1'] = "scg-anatomy-female-v2.safetensors"
-            workflow["751"]['inputs']['model_weight_1'] = kwargs['lora_scale']
-
+        # high salary slave
+        workflow["50"]["inputs"]["seed"] = kwargs["seed"]
+        workflow["50"]["inputs"]["steps"] = kwargs["high_num_inference_steps"]
+        workflow["50"]["inputs"]["cfg"] = kwargs["guidance_scale"]
+        workflow["50"]["inputs"]["denoise"] = kwargs["high_denoise"]
 
     def predict(
         self,
         prompt: str = Input(
             default="",
         ),
-        #negative_prompt: str = Input(
-        #    description="Things you do not want to see in your image",
-        #    default="",
-        #),
-        #image: Path = Input(
-        #    description="An input image",
-        #    default=None,
-        #),
+        negative_prompt: str = Input(
+            description="Things you do not want to see in your image",
+            default="",
+        ),
         aspect_ratio: str = Input(
             description="Aspect ratio for the generated image",
             choices=list(ASPECT_RATIOS.keys()),
@@ -118,44 +102,37 @@ class Predictor(BasePredictor):
         ),
         guidance_scale: float = Input(
             description="Guidance for the generated image",
-            default=2.5,
+            default=7,
             le=10,
             ge=0.1,
         ),
         num_inference_steps: float = Input(
             description="Number of inference steps",
-            default=28,
-            le=50,
+            default=50,
+            le=100,
             ge=1,
         ),
-        lora_scale: float = Input(
-            description="Initial LoRA scale",
-            default=0.5,
+        denoise: float = Input(
+            description="Denoise for the generated image",
+            default=1,
             le=1,
-            ge=-1,
+            ge=0,
         ),
-        model: str = Input(
-            description="Model to use",
-            choices=["STOIQONewrealityFLUXSD_F1DAlpha", "test"],
-            default="STOIQONewrealityFLUXSD_F1DAlpha",
+        high_num_inference_steps: float = Input(
+            description="Number of inference steps for the high salary",
+            default=50,
+            le=100,
+            ge=1,
         ),
-        add_lora: bool = Input(
-            description="Add LoRA to the model",
-            default=False,
+        high_denoise: float = Input(
+            description="Denoise for the high salary",
+            default=0.4,
+            le=1,
+            ge=0,
         ),
         output_format: str = optimise_images.predict_output_format(),
         output_quality: int = optimise_images.predict_output_quality(),
         seed: int = seed_helper.predict_seed(),
-        #lora_url: str = Input(
-        #    description="Optional LoRA model to use. Give a URL to a HuggingFace .safetensors file, a Replicate .tar file or a CivitAI download link.",
-        #    default="",
-        #),
-        #lora_strength: float = Input(
-        #    description="Strength of LoRA model",
-        #    default=1,
-        #    le=3,
-        #    ge=-1,
-        #),
     ) -> List[Path]:
         """Run a single prediction on the model"""
         self.comfyUI.cleanup(ALL_DIRECTORIES)
@@ -163,32 +140,20 @@ class Predictor(BasePredictor):
         # Make sure to set the seeds in your workflow
         seed = seed_helper.generate(seed)
 
-        #lora_filename = None
-        #if lora_url:
-        #    lora_filename = self.download_lora(lora_url)
-
-        #image_filename = None
-        #if image:
-        #    image_filename = self.filename_with_extension(image, "image")
-        #    self.handle_input_file(image, image_filename)
-
         with open(api_json_file, "r") as file:
             workflow = json.loads(file.read())
 
         self.update_workflow(
             workflow,
             prompt=prompt,
-            #negative_prompt=negative_prompt,
-            #image_filename=image_filename,
+            negative_prompt=negative_prompt,
             seed=seed,
-            #lora_filename=lora_filename,
-            #lora_strength=lora_strength,
             aspect_ratio=aspect_ratio,
             guidance_scale=guidance_scale,
-            lora_scale=lora_scale,
             num_inference_steps=num_inference_steps,
-            model=model,
-            add_lora=add_lora,
+            denoise=denoise,
+            high_num_inference_steps=high_num_inference_steps,
+            high_denoise=high_denoise,
         )
 
         wf = self.comfyUI.load_workflow(workflow)
