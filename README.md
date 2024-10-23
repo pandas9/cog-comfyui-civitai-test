@@ -29,10 +29,16 @@ docker system prune -af --volumes
 
 docker system prune -a
 
-docker system prune -af --volumes
-
 completely reset Docker and remove all of its data
 sudo systemctl stop docker
 sudo rm -rf /var/lib/docker
 
 sudo systemctl start docker
+sudo systemctl start docker.service
+sudo systemctl start docker.socket
+
+sudo systemctl status docker
+
+tmux list-sessions
+tmux attach -t <session-name>
+tmux kill-server
